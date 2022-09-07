@@ -40,7 +40,7 @@
 	 
 	function scripts() {
 		return src([ // Берем файлы из источников
-			'app/js/scripts.min.js', // Пример подключения библиотеки
+			'app/libs/jquery/dist/jquery.min.js', // Пример подключения библиотеки
 			'app/js/common.js', // Пользовательские скрипты, использующие библиотеку, должны быть подключены в конце
 			])
 		.pipe(concat('scripts.min.js')) // Конкатенируем в один файл
@@ -106,7 +106,7 @@
 		watch('app/**/*.html').on('change', browserSync.reload);
 	 
 		// Мониторим папку-источник изображений и выполняем images(), если есть изменения
-		watch('app/img/**/*', images);
+		watch('app/img/**/*').on('change', browserSync.reload);
 	 
 	}
 	 
@@ -129,4 +129,4 @@
 	exports.build = series(cleandist, styles, scripts, images, buildcopy);
 	 
 	// Экспортируем дефолтный таск с нужным набором функций
-	exports.default = parallel(styles, scripts, images, browsersync, startwatch);
+	exports.default = parallel(styles, scripts, series(cleanimg, images), browsersync, startwatch);
